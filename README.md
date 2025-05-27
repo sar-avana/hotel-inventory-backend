@@ -22,3 +22,6 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+# hotel-inventory-backend
+Backend for the hotel inventory management system
