@@ -1,21 +1,20 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: postgres
-  password: Admin
-  host: localhost
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV['DB_HOST'] %>
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PASSWORD'] %>
+  pool: 5
 
 development:
   <<: *default
-  database: inv_man_development
+  database: <%= ENV['DB_NAME'] || 'inv_man_development' %>
 
 test:
   <<: *default
-  database: inv_man_test
+  database: <%= ENV['DB_NAME'] || 'inv_man_test' %>
 
 production:
   <<: *default
-  database: inv_man_production
-  username: postgres  # Update if different
-  password: <%= ENV['INV_MAN_DATABASE_PASSWORD'] %> # Use environment variable for production
+  database: <%= ENV['DB_NAME'] || 'inv_man_production' %>
+
