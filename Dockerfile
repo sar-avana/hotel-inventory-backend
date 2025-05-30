@@ -20,6 +20,9 @@ RUN bundle install
 # Copy the rest of the application code
 COPY . .
 
+# Make bin/rails executable
+RUN chmod +x bin/rails
+
 # Precompile assets if needed (optional)
 # RUN bundle exec rake assets:precompile
 

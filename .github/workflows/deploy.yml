@@ -35,19 +35,16 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/hotel-inventory-backend:latest
 
-      # ✅ Authenticate to Google Cloud
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GKE_SA_KEY }}
 
-      # ✅ Set up GCloud CLI (optional but useful for debugging)
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
         with:
           project_id: ${{ secrets.GKE_PROJECT }}
 
-      # ✅ Use correct method to get GKE credentials (avoids plugin error)
       - name: Get GKE credentials
         uses: google-github-actions/get-gke-credentials@v1
         with:
@@ -59,3 +56,6 @@ jobs:
         run: |
           kubectl apply -f k8s/backend-deployment.yaml --validate=false
           kubectl apply -f k8s/backend-service.yaml --validate=false
+
+      - name: Rollout restart backend deployment
+        run: kubectl rollout restart deployment backend
