@@ -1,41 +1,31 @@
 class Api::Users::SessionsController < Devise::SessionsController
   respond_to :json
 
-  # Override create to ensure params are permitted and user can be authenticated
   def create
-    self.resource = warden.authenticate!(auth_options)
-    sign_in(resource_name, resource)
+    Rails.logger.info "Login params received: #{params.inspect}"
 
-    render json: {
-      status: { code: 200, message: 'Logged in successfully.' },
-      data: resource
-    }, status: :ok
+    user_data = params[:user] || params.dig(:session, :user)
+    user_data ||= {}
+
+    user = User.find_by(email: user_data[:email])
+
+    if user && user.valid_password?(user_data[:password])
+      sign_in(:user, user)
+      render json: {
+        status: { code: 200, message: 'Logged in successfully.' },
+        data: user
+      }, status: :ok
+    else
+      render json: {
+        status: { code: 401, message: 'Invalid email or password.' }
+      }, status: :unauthorized
+    end
   end
 
-  # Override destroy if you want to add any custom logic
   def destroy
-    super
-  end
-
-  private
-
-  # Strong params - Devise uses this internally, but you can explicitly permit here
-  def sign_in_params
-    params.require(:user).permit(:email, :password)
-  end
-
-  # respond_with is called on successful login (you can keep or customize)
-  def respond_with(resource, _opts = {})
+    sign_out(current_user)
     render json: {
-      status: { code: 200, message: 'Logged in successfully.' },
-      data: resource
+      status: { code: 200, message: 'Logged out successfully.' }
     }, status: :ok
-  end
-
-  # respond_to_on_destroy is called on logout
-  def respond_to_on_destroy
-    render json: { message: "Logged out successfully." }, status: :ok
   end
 end
-
-  
