@@ -1,16 +1,8 @@
 class Api::Users::SessionsController < Devise::SessionsController
-  include ActionController::RequestForgeryProtection
-
-  # ✅ Explicitly skip CSRF for JSON API logins
-  protect_from_forgery with: :null_session
-  skip_before_action :verify_authenticity_token, only: :create
-
-  # Define this method to avoid ArgumentError (required because of skip_before_action)
-  def verify_authenticity_token
-    # no-op, no CSRF check needed for API login
-  end
-
   respond_to :json
+
+  # Since ApplicationController < ActionController::API, no CSRF protection callbacks exist,
+  # so no need to skip anything here.
 
   def create
     Rails.logger.info "Raw request body: #{request.raw_post}"
