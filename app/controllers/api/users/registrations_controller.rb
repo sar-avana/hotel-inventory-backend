@@ -1,12 +1,18 @@
 class Api::Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
-  before_action :configure_sign_up_params, only: [:create]
+  private
+
+  def resource_params
+    params.require(:user).permit(:email, :password, :password_confirmation)
+  end
+
+  public
 
   def create
     Rails.logger.info "Params received: #{params.inspect}"
 
-    build_resource(sign_up_params)
+    build_resource(resource_params)
 
     if resource.save
       render json: {
@@ -19,18 +25,5 @@ class Api::Users::RegistrationsController < Devise::RegistrationsController
         errors: resource.errors.full_messages
       }, status: :unprocessable_entity
     end
-  end
-
-  protected
-
-  def configure_sign_up_params
-    devise_parameter_sanitizer.permit(:sign_up, keys: [:email, :password, :password_confirmation])
-  end
-
-  def sign_up_params
-    user_data = params[:user] || params.dig(:registration, :user)
-    user_data ||= {}
-
-    ActionController::Parameters.new(user_data).permit(:email, :password, :password_confirmation)
   end
 end
