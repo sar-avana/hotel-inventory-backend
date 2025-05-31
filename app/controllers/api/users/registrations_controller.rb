@@ -16,6 +16,14 @@ class Api::Users::RegistrationsController < Devise::RegistrationsController
       }, status: :unprocessable_entity
     end
   end
+
+  private
+
+  def sign_up_params
+    # Here you require :user and permit your user params inside it
+    params.require(:user).permit(:email, :password, :password_confirmation)
+  end
 end
+
 
   
