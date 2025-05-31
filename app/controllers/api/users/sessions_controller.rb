@@ -5,6 +5,11 @@ class Api::Users::SessionsController < Devise::SessionsController
   protect_from_forgery with: :null_session
   skip_before_action :verify_authenticity_token, only: :create
 
+  # Define this method to avoid ArgumentError (required because of skip_before_action)
+  def verify_authenticity_token
+    # no-op, no CSRF check needed for API login
+  end
+
   respond_to :json
 
   def create
