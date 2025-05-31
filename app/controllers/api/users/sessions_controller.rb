@@ -1,9 +1,6 @@
 class Api::Users::SessionsController < Devise::SessionsController
   respond_to :json
 
-  # Since ApplicationController < ActionController::API, no CSRF protection callbacks exist,
-  # so no need to skip anything here.
-
   def create
     Rails.logger.info "Raw request body: #{request.raw_post}"
     Rails.logger.info "Parsed params: #{params.inspect}"
