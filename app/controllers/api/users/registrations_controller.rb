@@ -11,6 +11,8 @@ class Api::Users::RegistrationsController < Devise::RegistrationsController
   public
 
   def create
+    Rails.logger.info "Params received: #{params.inspect}"  # Add this line
+
     build_resource(sign_up_params)
 
     if resource.save
@@ -25,4 +27,5 @@ class Api::Users::RegistrationsController < Devise::RegistrationsController
       }, status: :unprocessable_entity
     end
   end
+
 end
