@@ -5,7 +5,12 @@ class Api::Users::RegistrationsController < Devise::RegistrationsController
   private
 
   def sign_up_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+      # Check if params[:user] exists, else fallback to params[:registration][:user]
+    if params[:user].present?
+      params.require(:user).permit(:email, :password, :password_confirmation)
+    else
+      params.require(:registration).require(:user).permit(:email, :password, :password_confirmation)
+    end
   end
 
   public
