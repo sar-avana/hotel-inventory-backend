@@ -1,14 +1,16 @@
 class Api::Users::SessionsController < Devise::SessionsController
-  respond_to :json
+  include ActionController::RequestForgeryProtection
 
-  # Allow JSON login without CSRF token
+  # ✅ Explicitly skip CSRF for JSON API logins
+  protect_from_forgery with: :null_session
   skip_before_action :verify_authenticity_token, only: :create
+
+  respond_to :json
 
   def create
     Rails.logger.info "Raw request body: #{request.raw_post}"
     Rails.logger.info "Parsed params: #{params.inspect}"
 
-    # Safely extract login params
     user_params = params.require(:user).permit(:email, :password)
     user = User.find_by(email: user_params[:email])
 
