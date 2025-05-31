@@ -1,13 +1,18 @@
 class ApplicationController < ActionController::API
-  include ActionController::RequestForgeryProtection
-  include ActionController::Cookies
-
-  # ✅ Enable session store
-  before_action :set_csrf_cookie
+  attr_reader :current_user
 
   private
 
-  def set_csrf_cookie
-    cookies["CSRF-TOKEN"] = form_authenticity_token
+  def authenticate_user!
+    header = request.headers['Authorization']
+    token = header&.split(' ')&.last
+
+    begin
+      decoded = JWT.decode(token, Rails.application.secret_key_base).first
+      @current_user = User.find(decoded["user_id"])
+    rescue JWT::DecodeError, ActiveRecord::RecordNotFound
+      render json: { error: "Unauthorized" }, status: :unauthorized
+    end
   end
 end
+
