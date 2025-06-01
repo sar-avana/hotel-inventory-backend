@@ -57,5 +57,8 @@ jobs:
           kubectl apply -f k8s/backend-deployment.yaml --validate=false
           kubectl apply -f k8s/backend-service.yaml --validate=false
 
+      - name: Run DB migrations
+        run: kubectl apply -f k8s/backend-migrate-job.yaml --validate=false
+
       - name: Rollout restart backend deployment
         run: kubectl rollout restart deployment backend
