@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: backend-migrate
+spec:
+  template:
+    spec:
+      containers:
+        - name: backend-migrate
+          image: saravanan777/hotel-inventory-backend:<VERSION_TAG>
+          imagePullPolicy: Always
+          command: ["bin/rails", "db:migrate"]
+          env:
+            - name: DB_HOST
+              value: postgres
+            - name: DB_USER
+              value: myuser
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secrets
+                  key: db-password
+            - name: DB_NAME
+              value: mydb
+      restartPolicy: Never
+  backoffLimit: 3
