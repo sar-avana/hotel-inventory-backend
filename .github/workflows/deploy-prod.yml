@@ -62,7 +62,10 @@ jobs:
           kubectl apply -f k8s/prod/backend-deployment.yml --validate=false
 
       - name: Run DB migrations
-        run: kubectl apply -f k8s/prod/backend-migrate-job.yml --validate=false
+        run: |
+          echo "Running DB migrations with image: saravanan777/hotel-inventory-backend:${{ github.sha }}"
+          kubectl delete job backend-migrate --ignore-not-found
+          kubectl apply -f k8s/prod/backend-migrate-job.yml --validate=false
 
       - name: Rollout restart backend deployment
         run: kubectl rollout restart deployment backend --namespace=default
