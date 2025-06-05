@@ -12,6 +12,9 @@ Rails.application.configure do
   # Show full error reports.
   config.consider_all_requests_local = true
 
+  # Allow requests from Kubernetes internal service DNS
+  config.hosts << "backend-service.default.svc.cluster.local"
+
   #This is required by Devise for URL generation in things like password resets.
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
 

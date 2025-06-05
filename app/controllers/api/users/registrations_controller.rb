@@ -1,8 +1,18 @@
-class Users::RegistrationsController < Devise::RegistrationsController
+class Api::Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
+  private
+
+  def resource_params
+    params.require(:user).permit(:email, :password, :password_confirmation)
+  end
+
+  public
+
   def create
-    build_resource(sign_up_params)
+    Rails.logger.info "Params received: #{params.inspect}"
+
+    build_resource(resource_params)
 
     if resource.save
       render json: {
@@ -17,5 +27,3 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
   end
 end
-
-  
