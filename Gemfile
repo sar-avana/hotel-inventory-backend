@@ -27,7 +27,7 @@ gem 'devise'
 gem 'devise-jwt'
 
 # add pg gem for PostgreSQL
-gem 'pg', '~> 1.4'
+gem 'pg', '~> 1.6'
 
 #cors gem
 gem 'rack-cors'
